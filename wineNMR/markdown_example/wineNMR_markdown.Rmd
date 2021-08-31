@@ -1,0 +1,76 @@
+---
+title: "wineNMR"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
+library(wineNMR)
+```
+
+## Wine NMR Multitask Prediction
+
+Reading in the data:
+
+```{r}
+wine_data = load_wine('../data')
+```
+
+Create a map of all of the wines:
+
+```{r, echo=FALSE}
+plot(wine_data, plot_type = 'map')
+```
+
+
+Plot an example of the NMR:
+
+```{r}
+plot(wine_data)
+```
+
+
+
+Create a dendrogram of the samples of NMR using protoclust:
+
+```{r}
+plot(wine_data, plot_type = 'dendrogram')
+```
+Create a correlation plot of the response matrix:
+
+```{r}
+plot(wine_data, plot_type = 'correlation')
+```
+Run glmnet with the mgaussian family option (using an alpha of 0.5 for elastic net):
+
+```{r}
+# run glmnet
+fit = fit_wine(wine_data)
+```
+
+The percent of the NMR features removed:
+
+```{r}
+fit$percent_removed
+```
+```{r}
+plot(fit$fit)
+```
+
+Predicting a subset of the responses:
+
+```{r}
+pred_wine = predict(fit, wine_data, c('malicAcid', 'ethanol', 'GlucFruct'))
+```
+
+
+Plot of the responses predicted:
+
+```{r}
+plot(pred_wine)
+```
+
+```{r}
+plot(pred_wine, resid_plot = T)
+```
+
